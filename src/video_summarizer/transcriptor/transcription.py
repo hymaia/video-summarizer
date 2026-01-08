@@ -15,7 +15,7 @@ def read_transcript(url: str) -> Union[str, None]:
     if "youtube" in url :
         video_id = extract_video_id(url)
         ytt_api = YouTubeTranscriptApi()
-        transcript = ytt_api.fetch(video_id)
+        transcript = ytt_api.fetch(video_id, languages=['en', 'fr'])
         transcript_text = ""
         for segment in transcript:
             timestamp = int(segment.start)

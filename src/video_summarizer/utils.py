@@ -13,7 +13,22 @@ def chatgpt_generate_response(prompt: str) -> str:
     )
     return response.output_text
 
+def stream_openai_response(prompt: str):
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    # Active le streaming
+    stream = client.responses.create(
+        model=os.environ.get("MODEL_NAME"),
+        input=prompt,
+        stream=True,
+    )
+    # Parcours des événements SSE
+    for event in stream:
+        # Chaque event est un objet avec un champ `type`
+        # On cherche les morceaux de texte
+        if event.type == "response.output_text.delta":
+            yield event.delta
 
+            
 
 def get_video_metadata(video_id: str):
     youtube = build(
@@ -55,8 +70,6 @@ def thumbnail_url(video_id: str, quality: str = "high") -> str:
         "max": "maxresdefault.jpg",
     }
     return f"https://img.youtube.com/vi/{video_id}/{quality_map[quality]}"
-
-
 
 
 def youtube_search(query: str):

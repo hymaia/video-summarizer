@@ -1,6 +1,7 @@
 import streamlit as st
 from video_summarizer.transcriptor import transcription
 from video_summarizer import utils
+import time
 
 
 st.title("🎬 Video Summarizer")
@@ -73,8 +74,20 @@ if st.session_state.video_url:
         # Generation du rapport final
         st.subheader("Génération du résumé")
         prompt = utils.context_llm_resume +  f"### METADATA :\nTitle: {metadata['title']}\n ### Description: {metadata['description']}\n\n" + f"\n\n ### TRANSCRIPT :\n{transcript}\n\n"
-        with st.spinner("Génération du résumé..."):
-            resume = utils.chatgpt_generate_response(prompt)
+        
+        placeholder = st.empty()
+        full_text = ""
 
-        st.write(resume)
+        #with st.spinner("Génération du résumé..."):
+        start_time = time.perf_counter()
+
+        with st.spinner("Génération du résumé..."):
+            for chunk in utils.stream_openai_response(prompt):
+                full_text += chunk
+                placeholder.markdown(full_text + " ▌")
+
+        duration = time.perf_counter() - start_time
+
+
+        st.success(f"Résumé généré en {duration:.2f} secondes")
 
