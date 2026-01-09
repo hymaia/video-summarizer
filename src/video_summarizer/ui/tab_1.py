@@ -2,6 +2,8 @@ import streamlit as st
 from video_summarizer.transcriptor import transcription
 from video_summarizer import utils
 import time
+import uuid
+from datetime import datetime
 
 
 st.title("🎬 Video Summarizer")
@@ -10,6 +12,11 @@ methode_recherche = st.pills("Méthode de recherche", options, selection_mode="s
 
 if "video_url" not in st.session_state:
     st.session_state.video_url = None  
+if "show_search_dialog" not in st.session_state:
+    st.session_state.show_search_dialog = False
+if "history" not in st.session_state:
+    st.session_state.history = []
+
 
 if methode_recherche == "URL":
     st.write("Colle une URL YouTube pour générer la transcription et le résumé.")
@@ -21,10 +28,14 @@ if methode_recherche == "URL":
 if methode_recherche == "Titre":
     query = st.text_input(
         "Titre de la vidéo",
-        placeholder="Hymaïa LLM presentation",
+        placeholder="ForwardDataConf MCP Hymaïa",
     )
-    if query:
-        utils.youtube_search_dialog(query)
+    st.session_state.search_query = query
+    if st.button("Rechercher"):
+        st.session_state.show_search_dialog = True
+
+    if st.session_state.get("show_search_dialog"):
+        utils.youtube_search_dialog(st.session_state.search_query)
 
 
 if st.session_state.video_url:
@@ -32,7 +43,11 @@ if st.session_state.video_url:
         st.write(f"URL Vidéo sélectionnée : {st.session_state.video_url}")
 
     if st.button("Transcrire & résumer"):
-        col_left, col_right = st.columns([1, 2.5], gap="large")
+        if "youtube.com" not in st.session_state.video_url: 
+            st.warning("Veuillez entrer une URL YouTube valide.")
+            st.stop()
+
+        col_left, col_right = st.columns([1.5, 2.5], gap="large")
 
         with col_left:
             video_id = transcription.extract_video_id(st.session_state.video_url)
@@ -86,8 +101,18 @@ if st.session_state.video_url:
                 full_text += chunk
                 placeholder.markdown(full_text + " ▌")
 
+
+
         duration = time.perf_counter() - start_time
 
 
         st.success(f"Résumé généré en {duration:.2f} secondes")
 
+        st.session_state.history.append({
+            "id": str(uuid.uuid4()),
+            "video_url": st.session_state.video_url,
+            "metadata": metadata,
+            "transcript": transcript,
+            "summary": full_text,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M")
+        })

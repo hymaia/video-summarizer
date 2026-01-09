@@ -125,6 +125,7 @@ def youtube_search_dialog(query: str):
                     f"https://www.youtube.com/watch?v={video_id}"
                 )
                 st.success("Vidéo sélectionnée")
+                st.session_state.show_search_dialog = False
                 st.rerun()
 
 
@@ -244,3 +245,34 @@ TAUX DE CONFIANCE : 80% (par exemple)
 
 INSTRUCTIONS SUPPLÉMENTAIRES : - Maintenir une cohérence entre tous les éléments produits - Adapter le style au type de contenu et au public cible - Optimiser pour l'engagement et la découvrabilité - Respecter les bonnes pratiques SEO actuelles
 """
+
+
+def generate_padding_logo_sidebar(top="7rem", height="auto", width="auto", below="7.5rem"):
+    st.markdown(f"""
+        <style>
+            /* On double les accolades pour le CSS */
+            [data-testid="stSidebarLogo"] {{
+                padding-top: {top};
+                height: {height};
+                width: {width};
+            }}
+            [data-testid="stSidebarNav"] {{
+                padding-top: {below} !important;
+            }}
+        </style>
+        """, unsafe_allow_html=True)
+
+
+def generate_padding_logo_main(top="1rem", height="7rem", width="auto"):
+    st.markdown(f"""
+        <style>
+            [data-testid="stHeaderLogo"] {{
+                padding-top: {top};
+                height: {height};
+                width: {width};
+            }}
+        </style>
+        """, unsafe_allow_html=True)
+    
+
+

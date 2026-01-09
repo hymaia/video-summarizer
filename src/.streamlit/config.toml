@@ -1,6 +1,5 @@
 [server]
 headless = true
-enableStaticServing = true
 
 [theme]
 primaryColor = "#a855f7"              # Purple-500 - vibrant, code-like accent

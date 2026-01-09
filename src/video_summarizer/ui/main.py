@@ -4,6 +4,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 load_dotenv()
+from video_summarizer import utils
 
 # Configuration de la page
 st.set_page_config(
@@ -14,7 +15,9 @@ st.set_page_config(
 
 
 # logo 
-st.logo("../static/logo_hymaia.svg")
+utils.generate_padding_logo_sidebar()
+utils.generate_padding_logo_main()
+st.logo("../static/logo_video_summarizer.png")
 
 # Definition des pages avec navigation top
 print("current wd : " ,os.getcwd())
@@ -27,7 +30,7 @@ pages = [
     ),
     st.Page(
         r"tab_2.py",
-        title="Planning",
+        title="Historique",
         icon=":material/dashboard:",
     ),
 
