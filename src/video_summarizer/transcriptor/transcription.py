@@ -20,7 +20,7 @@ def read_transcript(url: str) -> Union[str, None]:
         for segment in transcript:
             timestamp = int(segment.start)
             timestamp = seconds_to_hhmmss(timestamp)
-            transcript_text += f"[{timestamp}] {segment.text}\n"
+            transcript_text += f"[{timestamp}]  {segment.text}\n"
         return transcript_text
     
     else:

@@ -30,6 +30,7 @@ if methode_recherche == "Titre":
         "Titre de la vidéo",
         placeholder="ForwardDataConf MCP Hymaïa",
     )
+    
     st.session_state.search_query = query
     if st.button("Rechercher"):
         st.session_state.show_search_dialog = True
@@ -37,12 +38,13 @@ if methode_recherche == "Titre":
     if st.session_state.get("show_search_dialog"):
         utils.youtube_search_dialog(st.session_state.search_query)
 
-
 if st.session_state.video_url:
+    
     if methode_recherche == "Titre":
         st.write(f"URL Vidéo sélectionnée : {st.session_state.video_url}")
 
     if st.button("Transcrire & résumer"):
+        st.divider()
         if "youtube.com" not in st.session_state.video_url: 
             st.warning("Veuillez entrer une URL YouTube valide.")
             st.stop()
@@ -51,24 +53,20 @@ if st.session_state.video_url:
 
         with col_left:
             video_id = transcription.extract_video_id(st.session_state.video_url)
-
             metadata = utils.get_video_metadata(video_id)
-
             st.subheader("📸 Vidéo")
+            
+            col1, col2 = st.columns([1.5, 2.5], gap="large")
+            
+            with col1 : 
+                st.image(
+                utils.thumbnail_url(video_id), width=100, use_container_width=True)
 
-            st.image(
-                utils.thumbnail_url(video_id),
-                use_container_width=True, width=150
-            )
-
-            if metadata:
-                st.markdown(f"**🎬 Titre**  \n{metadata['title']}")
-                st.markdown(f"**⏱️ Durée**  \n{metadata['duration']}")
-
-            st.caption(f"Video ID : {video_id}")
+            with col2: 
+                if metadata:
+                    st.markdown(f"**🎬 Titre**  \n{metadata['title']}  -  ⏱️ {metadata['duration']}")
 
 
-        with col_right:
             # Transcription
             with st.spinner("Récupération de la transcription..."):
                 try:
@@ -83,36 +81,35 @@ if st.session_state.video_url:
             st.text_area(
                 label="",
                 value=transcript,
-                height=450,
+                height=500,
             )
 
-        # Generation du rapport final
-        st.subheader("Génération du résumé")
-        prompt = utils.context_llm_resume +  f"### METADATA :\nTitle: {metadata['title']}\n ### Description: {metadata['description']}\n\n" + f"\n\n ### TRANSCRIPT :\n{transcript}\n\n"
-        
-        placeholder = st.empty()
-        full_text = ""
+        with col_right:
+            # Generation du rapport final
+            st.subheader("Génération du résumé")
+            prompt = utils.context_llm_resume +  f"### METADATA :\nTitle: {metadata['title']}\n ### Description: {metadata['description']}\n\n" + f"\n\n ### TRANSCRIPT :\n{transcript}\n\n"
+            
+            placeholder = st.empty()
+            full_text = ""
 
-        #with st.spinner("Génération du résumé..."):
-        start_time = time.perf_counter()
+            #with st.spinner("Génération du résumé..."):
+            start_time = time.perf_counter()
 
-        with st.spinner("Génération du résumé..."):
-            for chunk in utils.stream_openai_response(prompt):
-                full_text += chunk
-                placeholder.markdown(full_text + " ▌")
+            with st.spinner("Génération du résumé..."):
+                for chunk in utils.stream_openai_response(prompt):
+                    full_text += chunk
+                    placeholder.markdown(full_text + " ▌")
 
-
-
-        duration = time.perf_counter() - start_time
+            duration = time.perf_counter() - start_time
 
 
-        st.success(f"Résumé généré en {duration:.2f} secondes")
+            st.success(f"Résumé généré en {duration:.2f} secondes")
 
-        st.session_state.history.append({
-            "id": str(uuid.uuid4()),
-            "video_url": st.session_state.video_url,
-            "metadata": metadata,
-            "transcript": transcript,
-            "summary": full_text,
-            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M")
-        })
+            st.session_state.history.append({
+                "id": str(uuid.uuid4()),
+                "video_url": st.session_state.video_url,
+                "metadata": metadata,
+                "transcript": transcript,
+                "summary": full_text,
+                "created_at": datetime.now().strftime("%Y-%m-%d %H:%M")
+            })
