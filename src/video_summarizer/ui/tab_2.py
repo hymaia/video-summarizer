@@ -1,6 +1,8 @@
 import streamlit as st
 from video_summarizer import utils
 from video_summarizer.transcriptor import transcription
+from st_copy import copy_button
+import uuid
 
 
 if "history" not in st.session_state:
@@ -78,6 +80,12 @@ if selected_item:
                 """,
                 unsafe_allow_html=True,
             )
+        copy_button(transcript,
+        tooltip="Copier la transcription",
+        copied_label="Copié!",
+        icon="st",
+        key=str(uuid.uuid4()))
+
 
     # ========= RIGHT =========
     with col_right:
@@ -89,3 +97,9 @@ if selected_item:
                 """,
                 unsafe_allow_html=True,
             )
+
+        copy_button(summary,
+        tooltip="Copier le résumé",
+        copied_label="Copié!",
+        icon="st",
+        key=str(uuid.uuid4()))
