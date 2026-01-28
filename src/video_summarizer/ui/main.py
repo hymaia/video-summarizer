@@ -20,7 +20,6 @@ utils.generate_padding_logo_main()
 st.logo("../static/logo_video_summarizer.png")
 
 # Definition des pages avec navigation top
-print("current wd : " ,os.getcwd())
 pages = [
     st.Page(
         r"tab_1.py",

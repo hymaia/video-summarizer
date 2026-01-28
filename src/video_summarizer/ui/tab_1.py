@@ -64,7 +64,7 @@ if st.session_state.video_url:
 
             with col2: 
                 if metadata:
-                    st.markdown(f"**🎬 Titre**  \n{metadata['title']}  -  ⏱️ {metadata['duration']}")
+                    st.markdown(f"**🎬 Titre**  \n{metadata['title']}  - ⏱️ {metadata['duration']}")
 
 
             # Transcription
@@ -78,10 +78,14 @@ if st.session_state.video_url:
                     st.stop()
 
             st.subheader("📄 Transcription")
-            st.text_area(
-                label="",
-                value=transcript,
-                height=500,
+            with st.container(height=500) :
+                st.markdown(
+                f"""
+                <div style="white-space: pre-wrap;">
+                    {transcript}
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
         with col_right:
@@ -89,7 +93,8 @@ if st.session_state.video_url:
             st.subheader("Génération du résumé")
             prompt = utils.context_llm_resume +  f"### METADATA :\nTitle: {metadata['title']}\n ### Description: {metadata['description']}\n\n" + f"\n\n ### TRANSCRIPT :\n{transcript}\n\n"
             
-            placeholder = st.empty()
+            output_container = st.container(height=500)
+            placeholder = output_container.empty()
             full_text = ""
 
             #with st.spinner("Génération du résumé..."):
