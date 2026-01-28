@@ -1,6 +1,8 @@
+streamlit==1.52.2
 pytest
-youtube_transcript_api
-google-api-python-client
+youtube_transcript_api==1.2.3
+google-api-python-client==2.187.0
 dotenv
 isodate
-openai
+openai==2.14.0
+st_copy==1.1.2
