@@ -2,15 +2,29 @@
 set -euo pipefail
 
 VENV_DIR=".venv"
+REQUIRED_PYTHON_VERSION="3.14"
 REQ_FILE="requirements.txt"
 
-echo "Vérification de la présence de Python 3..."
-if ! command -v python3 >/dev/null 2>&1; then
-  echo "python3 introuvable."
+echo "Vérification de la présence de Python $REQUIRED_PYTHON_VERSION..."
+current_python_version=""
+if command -v python3 >/dev/null 2>&1; then
+  current_python_version="$(python3 -V | awk '{print $2}')"
+fi
+
+if [ -z "$current_python_version" ] || [[ "$current_python_version" != "$REQUIRED_PYTHON_VERSION"* ]]; then
+  if [ -n "$current_python_version" ]; then
+    echo "Version détectée: $current_python_version (attendu: $REQUIRED_PYTHON_VERSION)."
+  else
+    echo "python3 introuvable."
+  fi
   if [ "$(uname -s)" = "Darwin" ]; then
     if command -v brew >/dev/null 2>&1; then
-      echo "Installation de Python 3 via Homebrew..."
-      brew install python
+      echo "Installation de Python $REQUIRED_PYTHON_VERSION via Homebrew..."
+      brew install "python@$REQUIRED_PYTHON_VERSION"
+      brew_prefix="$(brew --prefix "python@$REQUIRED_PYTHON_VERSION")"
+      if [ -d "$brew_prefix/bin" ]; then
+        export PATH="$brew_prefix/bin:$PATH"
+      fi
     else
       echo "Homebrew introuvable. Installez Homebrew puis relancez le script."
       echo "Commande officielle : /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
