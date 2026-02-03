@@ -28,7 +28,9 @@ else
 fi
 
 # Demander les clés API à l'utilisateur
-echo "\nConfiguration des clés API..."
+echo " "
+echo "Configuration des clés API..."
+echo " "
 read -p "Entrez votre YOUTUBE_API_KEY : " YOUTUBE_API_KEY
 read -p "Entrez votre OPENAI_API_KEY : " OPENAI_API_KEY
 read -p "Entrez le nom du modèle (MODEL_NAME) : " MODEL_NAME
@@ -42,3 +44,4 @@ echo "MODEL_NAME=$MODEL_NAME" >> "$env_file"
 echo "Clés API enregistrées dans $env_file."
 
 echo "Terminé. Pour activer plus tard : conda activate $ENV_NAME"
+
