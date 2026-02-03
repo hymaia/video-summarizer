@@ -1,22 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ENV_NAME="video_summarizer"
+VENV_DIR=".venv"
 SCRIPT_PATH="src/video_summarizer/ui/main.py"
 
-# Vérification de la présence de conda
-echo "Vérification de la présence de conda..."
-if ! command -v conda >/dev/null 2>&1; then
-  echo "conda introuvable. Installez Miniconda/Anaconda puis relancez le script."
+# Vérification de la présence du venv
+echo "Vérification de la présence du venv..."
+if [ ! -d "$VENV_DIR" ]; then
+  echo "Venv introuvable dans '$VENV_DIR'. Lancez d'abord install_video_summarizer.sh."
   exit 1
 fi
 
-# Permet d'utiliser 'conda activate' dans ce script
-eval "$(conda shell.bash hook)"
-
-# Activation de l'environnement
-echo "Activation de l'environnement '$ENV_NAME'..."
-conda activate "$ENV_NAME"
+echo "Activation du venv..."
+# shellcheck disable=SC1090
+source "$VENV_DIR/bin/activate"
 
 # Vérification du chemin du script
 if [ ! -f "$SCRIPT_PATH" ]; then

@@ -1,48 +1,39 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ENV_NAME="video_summarizer"
-PYTHON_VERSION="3.14"
+VENV_DIR=".venv"
 REQ_FILE="requirements.txt"
 
-echo "Vérification de la présence de conda..."
-if ! command -v conda >/dev/null 2>&1; then
+echo "Vérification de la présence de Python 3..."
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "python3 introuvable."
   if [ "$(uname -s)" = "Darwin" ]; then
-    echo "conda introuvable. Installation de Miniconda pour macOS..."
-    arch="$(uname -m)"
-    case "$arch" in
-      arm64) installer="Miniconda3-latest-MacOSX-arm64.sh" ;;
-      x86_64) installer="Miniconda3-latest-MacOSX-x86_64.sh" ;;
-      *)
-        echo "Architecture macOS non supportée: $arch"
-        exit 1
-        ;;
-    esac
-
-    tmp_installer="/tmp/$installer"
-    curl -fsSL "https://repo.anaconda.com/miniconda/$installer" -o "$tmp_installer"
-    bash "$tmp_installer" -b -p "$HOME/miniconda3"
-    rm -f "$tmp_installer"
-    export PATH="$HOME/miniconda3/bin:$PATH"
-
-    if ! command -v conda >/dev/null 2>&1; then
-      echo "Échec de l'installation de Miniconda."
+    if command -v brew >/dev/null 2>&1; then
+      echo "Installation de Python 3 via Homebrew..."
+      brew install python
+    else
+      echo "Homebrew introuvable. Installez Homebrew puis relancez le script."
+      echo "Commande officielle : /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
       exit 1
     fi
   else
-    echo "conda introuvable. Installez Miniconda/Anaconda puis relancez le script."
+    echo "Système non supporté pour l'installation automatique de Python."
     exit 1
   fi
 fi
 
-echo "Création de l'environnement conda '$ENV_NAME' avec Python $PYTHON_VERSION..."
-conda create -n "$ENV_NAME" python="$PYTHON_VERSION" -y
+echo "Vérification de pip..."
+if ! command -v pip3 >/dev/null 2>&1; then
+  echo "pip introuvable. Tentative d'installation via ensurepip..."
+  python3 -m ensurepip --upgrade
+fi
 
-# Permet d'utiliser 'conda activate' dans ce script
-eval "$(conda shell.bash hook)"
+echo "Création du venv dans '$VENV_DIR'..."
+python3 -m venv "$VENV_DIR"
 
-echo "Activation de l'environnement '$ENV_NAME'..."
-conda activate "$ENV_NAME"
+echo "Activation du venv..."
+# shellcheck disable=SC1090
+source "$VENV_DIR/bin/activate"
 
 if [ -f "$REQ_FILE" ]; then
   echo "Installation des dépendances via pip depuis $REQ_FILE..."
@@ -67,4 +58,4 @@ echo "MODEL_NAME=$MODEL_NAME" >> "$env_file"
 
 echo "Clés API enregistrées dans $env_file."
 
-echo "Terminé. Pour activer plus tard : conda activate $ENV_NAME"
+echo "Terminé. Pour activer plus tard : source $VENV_DIR/bin/activate"
