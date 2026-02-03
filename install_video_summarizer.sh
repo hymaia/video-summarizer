@@ -7,8 +7,32 @@ REQ_FILE="requirements.txt"
 
 echo "Vérification de la présence de conda..."
 if ! command -v conda >/dev/null 2>&1; then
-  echo "conda introuvable. Installez Miniconda/Anaconda puis relancez le script."
-  exit 1
+  if [ "$(uname -s)" = "Darwin" ]; then
+    echo "conda introuvable. Installation de Miniconda pour macOS..."
+    arch="$(uname -m)"
+    case "$arch" in
+      arm64) installer="Miniconda3-latest-MacOSX-arm64.sh" ;;
+      x86_64) installer="Miniconda3-latest-MacOSX-x86_64.sh" ;;
+      *)
+        echo "Architecture macOS non supportée: $arch"
+        exit 1
+        ;;
+    esac
+
+    tmp_installer="/tmp/$installer"
+    curl -fsSL "https://repo.anaconda.com/miniconda/$installer" -o "$tmp_installer"
+    bash "$tmp_installer" -b -p "$HOME/miniconda3"
+    rm -f "$tmp_installer"
+    export PATH="$HOME/miniconda3/bin:$PATH"
+
+    if ! command -v conda >/dev/null 2>&1; then
+      echo "Échec de l'installation de Miniconda."
+      exit 1
+    fi
+  else
+    echo "conda introuvable. Installez Miniconda/Anaconda puis relancez le script."
+    exit 1
+  fi
 fi
 
 echo "Création de l'environnement conda '$ENV_NAME' avec Python $PYTHON_VERSION..."
@@ -44,4 +68,3 @@ echo "MODEL_NAME=$MODEL_NAME" >> "$env_file"
 echo "Clés API enregistrées dans $env_file."
 
 echo "Terminé. Pour activer plus tard : conda activate $ENV_NAME"
-
