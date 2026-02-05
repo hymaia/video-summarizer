@@ -18,6 +18,15 @@ if [ -z "$current_python_version" ] || [[ "$current_python_version" != "$REQUIRE
     echo "python3 introuvable."
   fi
   if [ "$(uname -s)" = "Darwin" ]; then
+    if ! command -v brew >/dev/null 2>&1; then
+      echo "Homebrew introuvable. Installation automatique..."
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      if [ -x /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      elif [ -x /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+      fi
+    fi
     if command -v brew >/dev/null 2>&1; then
       echo "Installation de Python $REQUIRED_PYTHON_VERSION via Homebrew..."
       brew install "python@$REQUIRED_PYTHON_VERSION"
@@ -26,8 +35,7 @@ if [ -z "$current_python_version" ] || [[ "$current_python_version" != "$REQUIRE
         export PATH="$brew_prefix/bin:$PATH"
       fi
     else
-      echo "Homebrew introuvable. Installez Homebrew puis relancez le script."
-      echo "Commande officielle : /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+      echo "Homebrew introuvable après tentative d'installation."
       exit 1
     fi
   else
