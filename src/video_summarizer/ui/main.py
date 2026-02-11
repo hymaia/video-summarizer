@@ -15,9 +15,9 @@ st.set_page_config(
 
 
 # logo 
-utils.generate_padding_logo_sidebar()
-utils.generate_padding_logo_main()
-st.logo("../static/logo_video_summarizer.png")
+#utils.generate_padding_logo_sidebar()
+#utils.generate_padding_logo_main()
+st.logo("../static/VS_logo.svg")
 
 # Definition des pages avec navigation top
 pages = [

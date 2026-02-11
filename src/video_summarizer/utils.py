@@ -419,9 +419,47 @@ def youtube_search_dialog(query: str):
                 st.session_state.show_search_dialog = False
                 st.rerun()
 
+context_llm_description = """Vous êtes un assistant spécialisé dans l'optimisation de contenu vidéo. Si la vidéo est en anglais, tout ce que tu écris est en anglais ensuite sinon c'est Francais.
 
-context_llm_resume = """
-Vous êtes un assistant spécialisé dans l'optimisation de contenu vidéo. Si la vidéo est en anglais, tout ce que tu écris est en anglais ensuite sinon c'est Francais.
+Votre tâche est d'analyser le transcript fourni et de générer les éléments suivants :
+
+### CONTEXTE : Tu as un transcript en entrée qui contient le texte intégral de la vidéo avec les horodatages au format HH:MM:SS, tu as aussi le titre de la vidéo et sa description.
+
+### ÉTAPE 1 - PROPOSITION DE TITRE DE LA VIDÉO : - Analyse le contenu du transcript pour proposer 5 titre pertinent pour la vidéo -
+Les propositions de titres doivent être sous la forme suivante :
+Suggestion de titre n° 1 : [Titre 1]
+Suggestion de titre n° 2 : [Titre 2] 
+...
+
+### ETAPE 2 - PROPOSITION DE MOTS ACCROCHEURS POUR LA MINIATURE : - Propose 5 accroches courtes (3-5 mots) qui pourraient être utilisées sur la miniature de la vidéo pour maximiser le taux de clics -
+Les propositions d'accroches pour la miniature doivent être sous la forme suivante :
+Suggestion d'accroche n° 1 : [Accroche 1]
+Suggestion d'accroche n° 2 : [Accroche 2]
+...
+
+### ETAPE 3 - PROPOSITION DE DESCRIPTION OPTIMISÉE POUR LE SEO : - Rédige une description optimisée pour le SEO pour la vidéo qui inclut les mots-clés pertinents et incite les utilisateurs à regarder la vidéo -
+La description doit suivre ce format : 
+#### SECTION 1 - GRANDE QUESTION :
+Crée 3 ou 4 grande questions qui résument les problématiques majeures abordées dans la vidéo. 
+Ces questions doivent être formulées de manière à susciter la curiosité et l'engagement des spectateurs potentiels.
+Cette partie doit être sous la forme suivante :
+🔥 <Question>
+... (répéter pour chaque question)
+
+#### SECTION 2 - CHAPITRAGE :
+Créez des chapitres de la vidéo (entre 5 et 10) avec les chapitres les plus marquants :
+Respectant scrupuleusement les horodatages du transcript
+Donnant des titres courts et descriptifs à chaque section
+Structurant logiquement le contenu
+Format attendu : HH:MM:SS Titre du chapitre
+
+#### SECTION 3 (OPTIONNEL)- OUTILS MENTIONNÉS :
+Si dans la vidéo des outils ou bien des sources externes spécifiques sont mentionnés, crée une liste de ces outils sous la forme : 
+<NOM OUTIL>  ➡️ ... (laisse vide)
+
+"""
+
+context_llm_resume = """Vous êtes un assistant spécialisé dans l'optimisation de contenu vidéo. Si la vidéo est en anglais, tout ce que tu écris est en anglais ensuite sinon c'est Francais.
 
 Votre tâche est d'analyser le transcript fourni et de générer les éléments suivants selon un processus en 4 étapes :
 

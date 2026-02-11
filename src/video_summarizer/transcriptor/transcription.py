@@ -1,8 +1,13 @@
 from typing import Union
 from youtube_transcript_api import YouTubeTranscriptApi
+import streamlit as st
 
 def extract_video_id(url: str) -> Union[str, None]:
-    return url.split("v=")[1].split("&")[0]
+    try :
+        return url.split("v=")[1].split("&")[0]
+    except Exception:
+        st.warning("URL YouTube invalide. Veuillez entrer une URL valide.")
+        st.stop()
 
 def seconds_to_hhmmss(seconds: float) -> str:
     hours = int(seconds // 3600)

@@ -28,7 +28,8 @@ section_1, section_2 = st.columns([1, 1])
 
 with section_1:
     st.subheader("🔍 Recherche")
-    with st.container(height=250):
+    with st.container(height=270):
+        non_repertoriee = st.toggle('Description pour vidéo non répertoriée', value=False)
         methode_recherche = st.pills("Méthode de recherche", options, selection_mode="single", default="URL")
 
         if "video_url" not in st.session_state:
@@ -68,7 +69,7 @@ with section_2:
         metadata = utils.get_video_metadata(video_id)
         st.session_state.metadata = metadata
         st.subheader("📸 Vidéo")
-        with st.container(height=250):
+        with st.container(height=270):
             st.image(
             utils.thumbnail_url(video_id), width=150)
             if metadata:
@@ -119,7 +120,12 @@ if st.session_state.video_url:
             st.subheader("📰 Résumé généré")
             # ensure metadata available
             metadata = st.session_state.metadata or utils.get_video_metadata(transcription.extract_video_id(st.session_state.video_url))
-            prompt = utils.context_llm_resume +  f"### METADATA :\nTitle: {metadata['title']}\n ### Description: {metadata['description']}\n\n" + f"\n\n ### TRANSCRIPT :\n{st.session_state.current_transcription}\n\n"
+            
+            if non_repertoriee:
+                prompt = utils.context_llm_description + f"\n\n ### TRANSCRIPT :\n{st.session_state.current_transcription}\n\n"
+
+            else: 
+                prompt = utils.context_llm_resume +  f"### METADATA :\nTitle: {metadata['title']}\n ### Description: {metadata['description']}\n\n" + f"\n\n ### TRANSCRIPT :\n{st.session_state.current_transcription}\n\n"
 
             start_time = time.perf_counter()
             with st.spinner("Génération du résumé..."):
