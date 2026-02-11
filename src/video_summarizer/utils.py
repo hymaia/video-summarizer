@@ -447,7 +447,7 @@ Cette partie doit être sous la forme suivante :
 ... (répéter pour chaque question)
 
 #### SECTION 2 - CHAPITRAGE :
-Créez des chapitres de la vidéo (entre 5 et 10) avec les chapitres les plus marquants :
+Créez des chapitres de la vidéo (entre 3 et 5 max) avec les chapitres les plus marquants :
 Respectant scrupuleusement les horodatages du transcript
 Donnant des titres courts et descriptifs à chaque section
 Structurant logiquement le contenu
