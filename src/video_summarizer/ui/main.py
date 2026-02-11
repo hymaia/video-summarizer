@@ -9,7 +9,7 @@ from video_summarizer import utils
 # Configuration de la page
 st.set_page_config(
     page_title="Video Summarizer",
-    page_icon=":material/dashboard:",
+    page_icon="../static/VS_32x32.svg",
     layout="wide",
 )
 
