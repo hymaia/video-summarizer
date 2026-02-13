@@ -23,14 +23,16 @@ st.logo("../static/VS_logo.svg")
 pages = [
     st.Page(
         r"tab_1.py",
-        title="Principal",
-        icon=":material/home:",
+        title="🏠 Principal",
         default=True
     ),
     st.Page(
         r"tab_2.py",
-        title="Historique",
-        icon=":material/dashboard:",
+        title="🕒 Historique",
+    ),
+    st.Page(
+        r"tab_3.py",
+        title="⚙️ Paramètres",
     ),
 
 ]

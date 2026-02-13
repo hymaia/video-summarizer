@@ -1,5 +1,6 @@
 import streamlit as st
- 
+import pandas as pd
+
 from video_summarizer.transcriptor import transcription
 from video_summarizer import utils
 import time
@@ -20,6 +21,9 @@ if "current_transcription" not in st.session_state:
     st.session_state.current_transcription = None
 if "current_summary" not in st.session_state:
     st.session_state.current_summary = None
+if "correct_transcription_file" not in st.session_state:
+    st.session_state.correct_transcription_file = pd.read_csv("video_summarizer/data/correct_transcriptions.csv")
+
 
 st.title("🎬 Video Summarizer")
 options = ["URL", "Titre"]
@@ -94,6 +98,15 @@ if st.session_state.video_url:
                 transcript = transcription.read_transcript(
                     st.session_state.video_url
                 )
+
+                df = st.session_state.correct_transcription_file.copy()
+                df = df[df["actif"] == True]
+                print(df)
+                for idx in df.index:
+                    transcrit = df.loc[idx, "transcrit"]
+                    nouveau = df.loc[idx, "nouveau"]
+                    transcript = transcript.replace(transcrit, nouveau)
+
             except Exception as e:
                 st.error(f"Erreur lors de la transcription : {e}")    
                 st.stop()
@@ -127,9 +140,9 @@ if st.session_state.video_url:
             else: 
                 prompt = utils.context_llm_resume +  f"### METADATA :\nTitle: {metadata['title']}\n ### Description: {metadata['description']}\n\n" + f"\n\n ### TRANSCRIPT :\n{st.session_state.current_transcription}\n\n"
 
+            output_container = st.container(height=500)
             start_time = time.perf_counter()
             with st.spinner("Génération du résumé..."):
-                output_container = st.container(height=500)
                 placeholder = output_container.empty()
                 full_text = ""
                 for chunk in utils.stream_openai_response(prompt):

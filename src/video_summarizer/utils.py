@@ -5,6 +5,13 @@ import isodate
 from openai import OpenAI
 import json
 from pathlib import Path
+import pandas as pd
+
+def create_correct_transcription_file(path):
+    if not os.path.exists(path):
+        pd.DataFrame(columns=["transcrit", "nouveau", "actif"]).to_csv(path, index=False)
+
+
 
 def chatgpt_generate_response(prompt: str):
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), )
