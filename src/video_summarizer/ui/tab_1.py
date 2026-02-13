@@ -36,7 +36,7 @@ section_1, section_2 = st.columns([1, 1])
 with section_1:
     st.subheader("🔍 Recherche")
     with st.container(height=270):
-        non_repertoriee = st.toggle('Description pour vidéo non répertoriée', value=False)
+        non_repertoriee = st.toggle('Description pour vidéo non répertoriée', value=True, help="Si la vidéo n'est pas répertoriée sur YouTube, activez cette option pour générer un résumé basé uniquement sur la transcription, sans contexte additionnel.")
         methode_recherche = st.pills("Méthode de recherche", options, selection_mode="single", default="URL")
 
         if "video_url" not in st.session_state:
