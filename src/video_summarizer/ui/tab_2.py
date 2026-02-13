@@ -5,6 +5,9 @@ from st_copy import copy_button
 import uuid
 
 
+utils.inject_global_styles()
+
+
 if "history" not in st.session_state:
     st.session_state.history = utils.load_history()
 
@@ -32,8 +35,8 @@ with st.sidebar:
         st.caption("Aucun résumé généré")
     else:
         for item in reversed(st.session_state.history):
-            label = f"🎬 {item['metadata']['title'][:40]}"
-            if st.button(label, key=item["video_url"]):
+            label = f"🎬 {item['metadata']['title'][:32]}"
+            if st.button(label, key=item["video_url"], use_container_width=False, type="secondary"):
                 st.session_state.current_item_id = item["video_url"]
 
 selected_item = None
@@ -90,7 +93,7 @@ if selected_item:
     # ========= RIGHT =========
     with col_right:
         st.subheader("Génération du résumé")
-        with st.container(height=500):
+        with st.container(height=720):
             st.markdown(
                 f"""
                 <div style="white-space: pre-wrap;">{summary}</div>

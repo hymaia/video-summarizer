@@ -612,3 +612,156 @@ def generate_padding_logo_main(top="1rem", height="7rem", width="auto"):
     
 
 
+def inject_global_styles():
+    """Injecte un thème épuré en s'appuyant sur les couleurs Streamlit existantes."""
+    st.markdown(
+        """
+        <style>
+            :root {
+                --vs-card-bg: color-mix(in srgb, var(--secondary-background-color) 55%, #ffffff 45%);
+                --vs-card-bg-2: color-mix(in srgb, var(--secondary-background-color) 45%, #ffffff 55%);
+                --vs-card-border: rgba(255, 255, 255, 0.14);
+                --vs-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+                --vs-radius: 16px;
+            }
+
+            [data-testid="stAppViewContainer"] > .main {
+                padding: 2rem 2.5rem 2.5rem;
+            }
+
+            .block-container {
+                padding: 0.5rem 0 2.5rem;
+            }
+
+            [data-testid="stSidebar"] {
+                background: var(--secondary-background-color);
+                border-right: 1px solid rgba(0, 0, 0, 0.05);
+                box-shadow: 6px 0 18px rgba(0, 0, 0, 0.05);
+            }
+
+            [data-testid="stSidebar"] .stButton > button,
+            .stButton > button {
+                background: linear-gradient(135deg,
+                    color-mix(in srgb, var(--primary-color) 82%, #ffffff 18%),
+                    color-mix(in srgb, var(--primary-color) 65%, #ffffff 35%));
+                color: #fdfdfd;
+                border: 1.5px solid rgba(255, 255, 255, 0.2);
+                border-radius: 999px;
+                padding: 0.65rem 1.35rem;
+                font-weight: 700;
+                letter-spacing: 0.01em;
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.12) inset;
+                transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease, border-color 120ms ease;
+            }
+
+            /* Sidebar history buttons (after the first action) made slimmer */
+            [data-testid="stSidebar"] .stButton:nth-of-type(n+2) > button {
+                padding: 0.45rem 0.9rem;
+                border-radius: 12px;
+                font-size: 0.92rem;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22), 0 1px 0 rgba(255, 255, 255, 0.10) inset;
+            }
+
+            .stButton > button:hover,
+            [data-testid="stSidebar"] .stButton > button:hover {
+                transform: translateY(-1px);
+                filter: brightness(1.05);
+                border-color: rgba(255, 255, 255, 0.28);
+                box-shadow: 0 16px 38px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.16) inset;
+            }
+
+            .stButton > button:active,
+            [data-testid="stSidebar"] .stButton > button:active {
+                transform: translateY(0);
+                box-shadow: 0 9px 22px rgba(0, 0, 0, 0.28), 0 1px 0 rgba(255, 255, 255, 0.14) inset;
+            }
+
+            .stTextInput > div > input,
+            .stTextArea textarea,
+            .stSelectbox select,
+            .stNumberInput input,
+            .stDateInput input,
+            .stMarkdown textarea,
+            .st-cp {
+                border-radius: var(--vs-radius);
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 6px 16px rgba(0, 0, 0, 0.04);
+                background: color-mix(in srgb, var(--secondary-background-color) 82%, #ffffff 18%);
+            }
+
+            [data-testid="stToolbar"] {
+                background: transparent;
+            }
+
+            /* Habillage uniquement des st.container pour créer les cards sans toucher l'intérieur */
+            [data-testid="stContainer"] > div {
+                background: linear-gradient(170deg, var(--vs-card-bg) 0%, var(--vs-card-bg-2) 100%);
+                border: 1px solid var(--vs-card-border);
+                border-radius: var(--vs-radius);
+                box-shadow: var(--vs-shadow);
+                backdrop-filter: blur(4px);
+                outline: 1px solid rgba(255, 255, 255, 0.06);
+                overflow: hidden;
+                position: relative;
+            }
+
+            [data-testid="stContainer"] > div::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: var(--vs-radius);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+                pointer-events: none;
+            }
+
+            .stTabs [data-baseweb="tab-list"] {
+                gap: 0.35rem;
+                padding: 0.25rem;
+                border-radius: 12px;
+                background: rgba(0, 0, 0, 0.03);
+            }
+
+            .stTabs [data-baseweb="tab"] {
+                border-radius: 12px;
+                padding: 0.5rem 0.9rem;
+                color: rgba(0, 0, 0, 0.65);
+                font-weight: 600;
+                transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+            }
+
+            .stTabs [aria-selected="true"] {
+                background: color-mix(in srgb, var(--primary-color) 12%, #ffffff 88%);
+                color: var(--primary-color);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+                transform: translateY(-1px);
+            }
+
+            [data-testid="stHeader"] {
+                background: transparent;
+            }
+
+            .stAlert {
+                border-radius: var(--vs-radius);
+                box-shadow: var(--vs-shadow);
+            }
+
+            .stToastContainer {
+                right: 1.5rem;
+            }
+
+            .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+                letter-spacing: 0.01em;
+            }
+
+            .stMarkdown code, .stCodeBlock pre {
+                background: rgba(0, 0, 0, 0.04);
+                border-radius: 10px;
+                padding: 0.2rem 0.45rem;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+

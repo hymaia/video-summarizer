@@ -3,6 +3,9 @@ import pandas as pd
 from video_summarizer import utils
 import os
 
+
+utils.inject_global_styles()
+
 utils.create_correct_transcription_file("video_summarizer/data/correct_transcriptions.csv")
 
 st.title("Mise à jour de l'application")

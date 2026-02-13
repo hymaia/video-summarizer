@@ -9,6 +9,9 @@ from datetime import datetime
 from st_copy import copy_button
 # Render copy to clipboard button
 
+# Inject global UI theme once per page render
+utils.inject_global_styles()
+
 if "history" not in st.session_state:
     st.session_state.history = utils.load_history()
 
