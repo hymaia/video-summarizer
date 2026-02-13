@@ -104,7 +104,6 @@ if st.session_state.video_url:
 
                 df = st.session_state.correct_transcription_file.copy()
                 df = df[df["actif"] == True]
-                print(df)
                 for idx in df.index:
                     transcrit = df.loc[idx, "transcrit"]
                     nouveau = df.loc[idx, "nouveau"]
